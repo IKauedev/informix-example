@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  informix:
+    image: ibmcom/informix-developer-database:latest
+    container_name: informix
+    ports:
+      - "33378:9088"   # Porta SQL (exposta para JDBC)
+      - "9089:9089"    # Porta de administração
+    environment:
+      - LICENSE=accept
+      - INFORMIXSERVER=lo_informix1210
+      - DB_LOCALE=en_US.819
+      - CLIENT_LOCALE=en_US.819
+      - INFORMIXDIR=/opt/ibm/informix
+      - ONCONFIG=onconfig.lo_informix1210
+      - INFORMIX_PASSWORD=in4mix
+      - INFORMIX_USER=informix
+    volumes:
+      - informix_data:/opt/ibm/data
+    healthcheck:
+      test: ["CMD-SHELL", ". /opt/ibm/informix/ids.env && onstat -"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  informix_data:
